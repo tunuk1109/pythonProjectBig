@@ -7,7 +7,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from .permissions import CheckOwner
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -65,13 +65,19 @@ class ProductListViewSet(viewsets.ModelViewSet):
     filterset_class = ProductFilter
     search_fields = ['product_name']
     ordering_fields = ['created_date', 'price', 'product_name']
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, CheckOwner]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class ProductDetailViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, CheckOwner]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class RatingViewSet(viewsets.ModelViewSet):

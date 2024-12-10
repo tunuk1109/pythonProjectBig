@@ -160,3 +160,5 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+AUTH_USER_MODEL = 'shop.UserProfile'
