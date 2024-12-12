@@ -131,3 +131,24 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['category', 'product_name','description', 'price', 'check_original',
                  'product_video', 'photos', 'created_date',  'owner', 'ratings', 'reviews']
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True, source='product')
+
+    class Meta:
+        model = CarItem
+        fields = ['id', 'product', 'product_id', 'quantity', 'get_total_price']
+
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'items', 'total_price']
+
+    def get_total_price(self, obj):
+        return obj.get_total_price()

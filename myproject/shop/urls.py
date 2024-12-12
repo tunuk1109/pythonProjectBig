@@ -37,4 +37,10 @@ urlpatterns = [
     path('review/<int:pk>/', ReviewViewSet.as_view({'get': 'retrieve',
                                               'put': 'update',
                                               'delete': 'destroy'}), name='review_detail'),
+
+    path('cart/', CartViewSet.as_view({'get': 'retrieve'}), name='cart_detail'),
+
+    path('cart_items/', CartItemViewSet.as_view({'get': 'list', 'post': 'create'}), name='cart_item_list'),
+    path('cart_item/<int:pk>/', CartItemViewSet.as_view({'put': 'update', 'delete': 'destroy'}))
+
 ]
